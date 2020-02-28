@@ -14,33 +14,49 @@ public class SimpleList {
 	int count = 0;
 	int[] list = new int[10];
 	
+	
 /*
 * Function "add" inserts the given integer to the front of the array (index 0) and 
-* if the array was full prior to insertion, pushes off the last element in the array
+* if the array was full prior to insertion, list size is increased by 50%
 * Return value: none
 * Parameter: "newAddition" is the new integer value to be added to the array
 */
 	public void add(int newAddition) {
 		
-		for(int iterator = 9; iterator > 0; iterator--) {
+		//if list is full, creates new list with 50% more space.
+		if(count == list.length) {
+			
+			int[] tempList = new int[list.length + (list.length / 2)];
+			
+			for(int i = 0; i < list.length; i++) {
+				tempList[i] = list[i];
+			}
+			
+			list = new int[tempList.length];
+			for(int i = 0; i < count; i++) {
+				list[i] = tempList[i];
+			}
+		
+		}
+		
+		for(int iterator = count - 1; iterator > 0; iterator--) {
 			list [iterator] = list[iterator - 1];
 		}
 		
 		list [0] = newAddition;
-		
-		if(count < 10)
-			count++;
+		count++;
 	}
 /*
  * Function "remove" searches through the array looking for a match to the inputed integer to
- * delete. Once found, the array is moved to fill the empty space.
+ * delete. Once found, the array is moved to fill the empty space. If the list has more than 25%
+ * empty space, those empty spaces are removed
  * Return value: none
  * Parameter: "numToDelete" is the inputed integer to be searched for and deleted.
 */	
 	public void remove(int numToDelete) {
 		boolean removed = false;
 		
-		for(int iterator = 0; iterator < 10 && removed == false; iterator++) {
+		for(int iterator = 0; iterator < count && removed == false; iterator++) {
 			
 			if(list[iterator] == numToDelete) {
 	
@@ -48,11 +64,26 @@ public class SimpleList {
 				removed = true;
 				count--;
 				
-				for(int secondIterator = iterator; secondIterator < 9; secondIterator++) {
+				for(int secondIterator = iterator; secondIterator < count - 1; secondIterator++) {
 					
 					list[secondIterator] = list[secondIterator + 1];
 				}
 			}
+		}
+		
+		//if list has more than 25% empty spaces, delete 25% of list
+		if(count <= (int)(.75 * list.length) && list.length >= 1) {
+			
+			int[] tempList = new int[(int)(list.length * .75)];
+			
+			for(int i = 0; i < list.length; i++) {
+				tempList[i] = list[i];
+			}
+			
+			list = new int[tempList.length];
+			for(int i = 0; i < count; i++) {
+				list[i] = tempList[i];
+			}	
 		}
 	}
 /*
@@ -81,6 +112,70 @@ public class SimpleList {
 		}
 		return -1;
 	}
+	
+/*
+ * Function "append" takes in an integer to add the the end of the list. If the list is full then the 
+ * list is expanded 50%.
+ * Parameter: "newAddition" is the integer to be added to the end of the list.
+ */
+	public void append(int newAddition) {
+		
+		//if list is full, expand the list by 50%
+		if(count == list.length) {
+			
+			int[] tempList = new int[list.length + (list.length / 2)];
+			for(int i = 0; i < list.length; i++) {
+				tempList[i] = list[i];
+			}
+			
+			list = tempList;
+		}
+		
+		list[count + 1] = newAddition;
+	}
+	
+/*
+ * Function "first" returns the first integer in the list. If the list is empty, returns -1
+ * Parameter: none	
+ */
+	public int first() {
+		
+		if(count == 0) {
+			
+			return -1;
+			
+		}else {
+			
+			return list[0];
+		}
+	}
+
+/*
+ * Function "last" returns the last integer in the list. If the list is empty, returns -1
+ * Parameter: none	
+ */	
+	public int last() {
+		
+		if(count == 0) {
+			
+			return -1;
+			
+		} else {
+			
+			return list[count - 1];
+		}
+	}
+	
+/*
+ * Function "size" returns the current size of the list
+ * Parameter: none
+ */
+	public int size() {
+		
+		return count;
+	}
+	
+	
 /*
  * Function toString returns all elements in the array as a string seperated by a space.
  * Return value: String of all elements in the array
